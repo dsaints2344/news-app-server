@@ -16,6 +16,7 @@ connection.connect(err => {
     }
 });
 
+//API PARA CREAR TABLAS EN LA BASE DE DATOS
 app.get('/', (req, res) => {
     connection.query("call create_tables()", (err, results) =>{
         if (err) {
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 });
 
 
+//METODO PARA AGREGAR NOTICIAS
 app.post('/News/Add',(req, res) => {
     const{news_title, news_description, news_url, news_urlToImage, news_content} = req.query;
 
@@ -43,7 +45,7 @@ app.post('/News/Add',(req, res) => {
     } )
 } )
 
-//API METHOD TO EXTRACT FAVORITE NEWS
+//METODO PARA EXTRAER NOTICIAS SEGUN EL EMAIL DEL USUARIO
 app.get('/News/:email', (req, res) => {
 
     const {email} = req.query;
@@ -59,7 +61,7 @@ app.get('/News/:email', (req, res) => {
 });
 
 
-//API METHOD TO ADD USER
+//METODO PARA AGREGAR USUARIO
 app.post('/Users/new', (req, res) =>{
     const{ userid ,email, password, idUserArticle  } = req.query;
     connection.query("Call insert_user(?,?,?,?)", [ userid, email, password, idUserArticle], (err, results) =>{
