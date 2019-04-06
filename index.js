@@ -7,7 +7,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user:'root',
     password:'Password@_2362',
-    database:'world'
+    database:'newsdb'
 })
 
 connection.connect(err => {
@@ -17,16 +17,31 @@ connection.connect(err => {
 });
 
 app.get('/', (req, res) => {
-    connection.query("call create_table()", (err, results) =>{
+    connection.query("call create_tables()", (err, results) =>{
         if (err) {
             res.send(err);
         }
-        else(
-            console.log("datos introducidos")
-        )
+        else{
+            res.send("datos introducidos");
+        }
     });
 });
 
+
+app.post('/News/Add',(req, res) => {
+    const{news_title, news_description, news_url, news_urlToImage, news_content} = req.query;
+
+    connection.query("call insert news(?,?,?,?,?)", [news_title, news_description, news_url, news_urlToImage, news_content], (err, results) => {
+        if (err) {
+            return res.send(err);
+            
+        } else{
+            return res.json({
+                data: results
+            })
+        }
+    } )
+} )
 
 //API METHOD TO EXTRACT FAVORITE NEWS
 app.get('/News/:email', (req, res) => {
@@ -46,8 +61,8 @@ app.get('/News/:email', (req, res) => {
 
 //API METHOD TO ADD USER
 app.post('/Users/new', (req, res) =>{
-    const{email, password, idUserArticle  } = req.query;
-    connection.query("Call insert_user(?,?,?)", [email, password, idUserArticle], (err, results) =>{
+    const{ userid ,email, password, idUserArticle  } = req.query;
+    connection.query("Call insert_user(?,?,?,?)", [ userid, email, password, idUserArticle], (err, results) =>{
         if (err) {
             return res.send(err)
         } else{
